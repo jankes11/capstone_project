@@ -139,7 +139,6 @@ workflows:
           cluster-name: eks-capstone
           requires:
             - delay
-      - deploy-app-to-cluster:
-          requires: [build_pushImage, create-eks-cluster]
+
 
   
