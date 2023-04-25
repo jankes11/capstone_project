@@ -5,14 +5,14 @@
 # Step 1:
 # This is your Docker ID/path
 # dockerpath=<>
-dockerpath='jankes11/capstone:latest'
+dockerpath='jankes11/capstone_proj:latest'
 # Step 2
 # Run the Docker Hub container with kubernetes
-kubectl run capstonepp --image=$dockerpath --port=80
+kubectl run capstoneproj --image=$dockerpath --port=80
 
 # Step 3:
 # List kubernetes pods
 kubectl get pods
 # Step 4:
 # Forward the container port to a host
-kubectl port-forward capstonepp 8000:80
+kubectl port-forward capstoneproj 8000:80

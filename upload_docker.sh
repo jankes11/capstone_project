@@ -6,12 +6,12 @@
 # Step 1:
 # Create dockerpath
 # dockerpath=<your docker ID/path>
-dockerpath="jankes11/capstone"
+dockerpath="jankes11/capstone_proj"
 # Step 2:  
 # Authenticate & tag
 echo "Docker ID and Image: $dockerpath"
 docker login &&\
-    docker image tag capstone $dockerpath
+    docker image tag capstone_proj $dockerpath
 
 # Step 3:
 # Push image to a docker repository
