@@ -68,7 +68,7 @@ workflows:
     jobs:
       - build
       - build_pushImage:
-        requires:
-          - build
+          requires:
+            - build
 
   
