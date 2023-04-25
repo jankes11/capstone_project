@@ -62,7 +62,7 @@ jobs:
           name: push to dockerhub
           command: |
             docker login -u jankes11 -p yankee1979D!
-            docker image push capstone-${CIRCLE_WORKFLOW_ID:0:7}
+            docker image push jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7}
 
 workflows:
   deployment:
