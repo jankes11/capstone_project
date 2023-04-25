@@ -122,6 +122,10 @@ jobs:
             sleep 540
           name: Delay cluster deletion
 
+orbs:
+  aws-eks: circleci/aws-eks@2.2.0
+  kubernetes: circleci/kubernetes@1.3
+
 
 workflows:
   deployment:
