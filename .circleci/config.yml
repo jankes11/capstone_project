@@ -137,8 +137,8 @@ workflows:
             - create-small-cluster
       - aws-eks/delete-cluster:
           cluster-name: eks-capstone
-            requires:
-              - delay
+          requires:
+            - delay
       - deploy-app-to-cluster:
           requires: [build_pushImage, create-eks-cluster]
 
