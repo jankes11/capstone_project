@@ -51,7 +51,8 @@ jobs:
           name: install curl
           command: |
             apk add --update curl
-      - setup docker remotly
+            
+      - setup_docker_remotly
       - run:
           name: build docker image
           command: |
@@ -64,10 +65,11 @@ jobs:
             docker image push capstone-${CIRCLE_WORKFLOW_ID:0:7}
 
 workflows:
-  jobs:
-    - build
-    - build_pushImage:
-        requires:
-          - build
+  deployment:
+    jobs:
+      - build
+      - build_pushImage:
+          requires:
+            - build
 
   
