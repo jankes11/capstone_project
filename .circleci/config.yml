@@ -62,3 +62,13 @@ jobs:
           command: |
             docker login -u jankes11 -p yankee1979D!
             docker image push capstone-${CIRCLE_WORKFLOW_ID:0:7}
+
+Workflows:
+  deployment:
+    jobs:
+      - build
+      - build_pushImage:
+        requires:
+          - build
+
+  
