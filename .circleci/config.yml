@@ -64,11 +64,10 @@ jobs:
             docker image push capstone-${CIRCLE_WORKFLOW_ID:0:7}
 
 workflows:
-  deployment:
-    jobs:
-      - build
-      - build_pushImage:
-          requires:
-            - build
+  jobs:
+    - build
+    - build_pushImage:
+        requires:
+          - build
 
   
