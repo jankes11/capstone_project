@@ -41,3 +41,24 @@ jobs:
           command: |
             . venv/bin/activate 
             make lint 
+
+  build_pushImage:
+    docker:
+      - image: docker:stable
+    steps:
+      - checkout
+      - run:
+          name: install curl
+          command: |
+            apk add --update curl
+      - setup docker remotly
+      - run:
+          name: build docker image
+          command: |
+            docker build . -t capstone-${CIRCLE_WORKFLOW_ID:0:7}
+            docker image ls
+      - run:
+          name: push to dockerhub
+          command: |
+            docker login -u jankes11 -p yankee1979D!
+            docker image push capstone-${CIRCLE_WORKFLOW_ID:0:7}
