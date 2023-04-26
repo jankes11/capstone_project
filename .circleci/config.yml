@@ -61,7 +61,7 @@ jobs:
       - run:
           name: push to dockerhub
           command: |
-            docker login -u jankes11 -p yankee1979D!
+            docker login -u jankes11 -p yankee1979D! docker.io
             docker image push jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7}
 
   test-cluster:
