@@ -76,7 +76,7 @@ jobs:
     steps:
       - kubernetes/install
       - aws-eks/update-kubeconfig-with-authenticator:
-          role-arn: <<parameters.role_arn >>
+          cluster-name: <<parameters.cluster-name >>
       - run:
           name: kube cluster
           command: |
@@ -84,7 +84,7 @@ jobs:
 
 
 orbs:
-  aws-eks: circleci/aws-eks@1.1.0
+  aws-eks: circleci/aws-eks@2.2.0
   kubernetes: circleci/kubernetes@0.4.0
  # docker: circleci/docker@2.0.1
 
@@ -97,7 +97,7 @@ workflows:
           requires:
             - build
       - test-cluster:
-          role-arn: arn:aws:iam::402735671859:role/CapstoneClusterPolicy
+          cluster-name: capstoneProj
           requires:
             - build_pushImage
 
