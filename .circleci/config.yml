@@ -62,7 +62,7 @@ jobs:
           name: push to dockerhub
           command: |
             docker login -u jankes11 -p yankee1979D! docker.io
-            docker tag capstoneProjectfinal:version1
+            docker tag capstoneProjectfinal/capstone:version1
             docker image push jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7}
 
   test-cluster:
