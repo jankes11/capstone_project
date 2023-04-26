@@ -56,7 +56,7 @@ jobs:
       - run:
           name: build docker image
           command: |
-            docker build . -t jankes111/capstone-${CIRCLE_WORKFLOW_ID:0:7}
+            docker build . -t jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7}
             docker image ls
       - run:
           name: push to dockerhub
