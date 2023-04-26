@@ -63,8 +63,8 @@ jobs:
           command: |
             docker logout
             docker login -u jankes11 -p yankee1979D! docker.io
-            docker tag jankes111/capstone-${CIRCLE_WORKFLOW_ID:0:7} capstone:final
-            docker push jankes111/capstone-${CIRCLE_WORKFLOW_ID:0:7}
+            docker tag jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7} capstone:final
+            docker push jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7}
 
   test-cluster:
     executor: aws-eks/python3
