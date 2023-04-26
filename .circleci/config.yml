@@ -56,14 +56,14 @@ jobs:
       - run:
           name: build docker image
           command: |
-            docker build . -t jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7}
+            docker build . -t jankes111/capstone-${CIRCLE_WORKFLOW_ID:0:7}
             docker image ls
       - run:
           name: push to dockerhub
           command: |
             docker login -u jankes111 -p yankee1979 docker.io
-            docker tag jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7} capstone:final
-            docker push jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7}
+            docker tag jankes111/capstone-${CIRCLE_WORKFLOW_ID:0:7} capstone:final
+            docker push jankes111/capstone-${CIRCLE_WORKFLOW_ID:0:7}
 
   test-cluster:
     executor: aws-eks/python3
