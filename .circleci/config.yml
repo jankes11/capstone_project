@@ -77,6 +77,7 @@ jobs:
       - kubernetes/install
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: <<parameters.cluster-name >>
+          aws_region: <<parameters.cluster-name >>
       - run:
           name: kube cluster
           command: |
@@ -97,8 +98,10 @@ workflows:
           requires:
             - build
       - test-cluster:
+          cluster-name: capstoneProj
+          aws_region: us-east-1
           requires:
             - build_pushImage
-          cluster-name: capstoneProj
+
 
   
