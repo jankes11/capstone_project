@@ -82,8 +82,26 @@ jobs:
       - run:
           name: kube cluster
           command: |
+            aws eks update-kubeconfig --name jankes11 --region us-east-1 --role-arn arn:aws:iam::093547125050:user/jankes11
+            kubectl edit -n kube-system configmap/aws-auth
             kubectl get services
 
+  run-deployment:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
+    steps:
+      - checkout
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          install-kubectl: true
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: deployment.yml
+          resource-name: deployment/capstone-site
 
 orbs:
   aws-eks: circleci/aws-eks@2.2.0
