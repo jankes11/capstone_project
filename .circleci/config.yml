@@ -97,14 +97,14 @@ jobs:
           name: build docker image
           command: |
             docker logout
-            docker build -t capstoneF .
-            docker tag capstoneF jankes11/capstoneF:almostThere
+            docker build -t capstonef .
+            docker tag capstonef jankes11/capstonef:almostThere
             docker image ls
       - run:
           name: push to dockerhub
           command: |
             docker login -u "$DOCKER_USR" -p "$DOCKER_PSWRD" docker.io
-            docker push jankes11/capstoneF
+            docker push jankes11/capstonef
 
   create-eks-cluster:
     docker:
@@ -121,9 +121,9 @@ jobs:
       - run:
           name: Create AWS EKS cluster
           command: |
-            eksctl create cluster --name capstoneF --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
-            eksctl utils describe-stacks --region us-east-1 --cluster=capstoneF
-            eksctl get cluster --name=capstoneF --region=us-east-1
+            eksctl create cluster --name capstonef --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
+            eksctl utils describe-stacks --region us-east-1 --cluster=capstonef
+            eksctl get cluster --name=capstonef --region=us-east-1
 
   test-cluster:
     docker:
@@ -201,15 +201,15 @@ workflows:
           requires:
             - build_pushImage
       - test-cluster:
-          cluster-name: capstoneF
+          cluster-name: capstonef
           requires:
             - create-eks-cluster
       - deploy-cluster:
-          cluster-name: capstoneF
+          cluster-name: capstonef
           requires:
             - test-cluster
       - verify-cluster:
-          cluster-name: capstoneF
+          cluster-name: capstonef
           requires:
             - deploy-cluster
 
