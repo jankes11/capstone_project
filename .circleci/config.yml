@@ -121,6 +121,7 @@ jobs:
       - run:
           name: Create AWS EKS cluster
           command: |
+            eksctl delete cluster --region=us-east-1 --name=capstone
             eksctl create cluster --name capstone --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
             eksctl utils describe-stacks --region us-east-1 --cluster=capstone
             eksctl get cluster --name=capstone --region=us-east-1
