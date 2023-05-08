@@ -82,8 +82,6 @@ jobs:
       - run:
           name: kube cluster
           command: |
-            aws eks update-kubeconfig --name capstoneProj --region us-east-1 --role-arn arn:aws:iam::093547125050:user/jankes11
-            kubectl edit -n kube-system configmap/aws-auth
             kubectl get services
 
   run-deployment:
