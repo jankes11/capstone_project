@@ -186,7 +186,7 @@ jobs:
 
 orbs:
   aws-eks: circleci/aws-eks@2.2.0
-  kubernetes: circleci/kubernetes@0.4.0
+  kubernetes: circleci/kubernetes@0.11.2
  # docker: circleci/docker@2.0.1
 
 
