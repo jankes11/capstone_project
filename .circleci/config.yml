@@ -97,14 +97,14 @@ jobs:
           name: build docker image
           command: |
             docker logout
-            docker build -t capstone-${CIRCLE_WORKFLOW_ID:0:7} .
-            docker tag capstone-${CIRCLE_WORKFLOW_ID:0:7} jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7}:capstone-${CIRCLE_WORKFLOW_ID:0:7}
+            docker build -t capstone1 .
+            docker tag capstone1 jankes11/capstone1:almostThere
             docker image ls
       - run:
           name: push to dockerhub
           command: |
-            docker login -u jankes11 -p yankee1979D! docker.io
-            docker push jankes11/capstone-${CIRCLE_WORKFLOW_ID:0:7}
+            docker login -u "$DOCKER_USR" -p "$DOCKER_PSWRD" docker.io
+            docker push jankes11/capstone1
 
   create-eks-cluster:
     docker:
@@ -121,9 +121,9 @@ jobs:
       - run:
           name: Create AWS EKS cluster
           command: |
-            eksctl create cluster --name capstoneProj1 --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
-            eksctl utils descibe-stacks --region us-east-1 --cluster=capstoneProj1
-            eksctl get cluster --name=capstoneProj1 --region=us-east1
+            eksctl create cluster --name capstone1 --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
+            eksctl utils describe-stacks --region us-east-1 --cluster=capstone1
+            eksctl get cluster --name=capstone1 --region=us-east1
 
   test-cluster:
     docker:
@@ -143,6 +143,47 @@ jobs:
           command: |
             kubectl get services
 
+  deploy-cluster:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          capstone
+        type: string
+    steps:
+      - checkout
+      - kubernetes/install
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          install-kubectl: true
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: deployment.yml
+          resource-name: deployment/capstone
+
+
+  verify-cluster:
+    executor: aws-eks/python3
+    parameters: 
+      cluster-name:
+        description: |
+          capstone
+        type: string
+    steps:
+      - kubernetes/install
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+      - run:
+          name: Check Cluster status
+          command: |
+            kubectl get nodes
+            kubectl get all
+            kubectl get services
+            kubectl get deployments
+
+
+
+
 orbs:
   aws-eks: circleci/aws-eks@2.2.0
   kubernetes: circleci/kubernetes@0.4.0
@@ -160,9 +201,17 @@ workflows:
           requires:
             - build_pushImage
       - test-cluster:
-          cluster-name: capstoneProj1
+          cluster-name: capstone1
           requires:
-            - build_pushImage
+            - create-eks-cluster
+      - deploy-cluster:
+          cluster-name: capstone1
+          requires:
+            - test-cluster
+      - verify-cluster:
+          cluster-name: capstone1
+          requires:
+            - deploy-cluster
 
 
   
