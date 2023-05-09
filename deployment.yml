@@ -27,8 +27,6 @@ spec:
           name: newimage
           ports:
             - containerPort: 80
----
-#Services
 
 apiVersion: v1
 kind: Service
