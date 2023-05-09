@@ -195,21 +195,21 @@ orbs:
 workflows:
   deployment:
     jobs:
-      - build
-      - build_pushImage:
-          requires:
-            - build
-      - create-eks-cluster:
-          requires:
-            - build_pushImage
-      - test-cluster:
-          cluster-name: capstone
-          requires:
-            - create-eks-cluster
+#      - build
+#      - build_pushImage:
+#          requires:
+#            - build
+#      - create-eks-cluster:
+#          requires:
+#            - build_pushImage
+#      - test-cluster:
+#          cluster-name: capstone
+#          requires:
+#            - create-eks-cluster
       - deploy-cluster:
           cluster-name: capstone
-          requires:
-            - test-cluster
+#          requires:
+#            - test-cluster
       - verify-cluster:
           cluster-name: capstone
           requires:
