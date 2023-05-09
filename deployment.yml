@@ -21,6 +21,8 @@ spec:
       containers:
         - image: jankes11/capstonefinal2
           imagePullPolicy: Always
+          nameOverride: ""
+          fullnameOverride: "deployment"
           name: capstonefinal2
           ports:
             - containerPort: 80
