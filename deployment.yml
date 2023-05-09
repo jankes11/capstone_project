@@ -1,40 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capstonefinal2
+  name: capstone
+  labels:
+    app: capstone
   namespace: default
 spec:
   replicas: 2
   progressDeadlineSeconds: 3600
   selector:
     matchLabels:
-      app: capstonefinal2
+      app: capstone
   strategy:
-    type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        app: capstonefinal2
+        app: capstone
     spec:
       containers:
         - image: jankes11/capstonefinal2
           imagePullPolicy: Always
-          nameOverride: ""
-          fullnameOverride: "deployment"
-          name: capstonefinal2
+          name: newimage
           ports:
             - containerPort: 80
+---
+#Services
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: capstonefinal2
+  name: capstone
+  labels:
+    app: capstone
 spec:
   type: LoadBalancer
   selector:
-    app: capstonefinal2
+    app: capstone
   ports:
     - port: 80
       targetPort: 80
