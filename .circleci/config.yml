@@ -96,14 +96,14 @@ jobs:
           name: build docker image
           command: |
             docker logout
-            docker build -t capstone .
-            docker tag capstone jankes11/capstone:latest
+            docker build -t fincapstone .
+            docker tag fincapstone jankes11/fincapstone:latest
             docker image ls
       - run:
           name: push to dockerhub
           command: |
             docker login -u "$DOCKER_USR" -p "$DOCKER_PSWRD" docker.io
-            docker push jankes11/capstone:latest
+            docker push jankes11/fincapstone:latest
 
   create-eks-cluster:
     docker:
@@ -120,9 +120,9 @@ jobs:
       - run:
           name: Create AWS EKS cluster
           command: |
-            eksctl create cluster --name capstone --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
-            eksctl utils describe-stacks --region us-east-1 --cluster=capstone
-            eksctl get cluster --name=capstone --region=us-east-1
+            eksctl create cluster --name fincapstone --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
+            eksctl utils describe-stacks --region us-east-1 --cluster=fincapstone
+            eksctl get cluster --name=fincapstone --region=us-east-1
 
   test-cluster:
     docker:
@@ -147,7 +147,7 @@ jobs:
     parameters:
       cluster-name:
         description: |
-          capstone
+          fincapstone
         type: string
     steps:
       - checkout
@@ -159,14 +159,14 @@ jobs:
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: deployment.yml
-          resource-name: deployment/capstone
+          resource-name: deployment/fincapstone
 
   verify-cluster:
     executor: aws-eks/python3
     parameters: 
       cluster-name:
         description: |
-          capstone
+          fincapstone
         type: string
     steps:
       - kubernetes/install
@@ -192,15 +192,15 @@ workflows:
           requires:
             - build_pushImage
       - test-cluster:
-          cluster-name: capstone
+          cluster-name: fincapstone
           requires:
             - create-eks-cluster
       - deploy-cluster:
-          cluster-name: capstone
+          cluster-name: fincapstone
           requires:
             - test-cluster
       - verify-cluster:
-          cluster-name: capstone
+          cluster-name: fincapstone
           requires:
             - deploy-cluster
 

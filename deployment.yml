@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capstone
+  name: fincapstone
   labels:
-    app: capstone
+    app: fincapstone
   namespace: default
 spec:
   replicas: 2
   progressDeadlineSeconds: 3600
   selector:
     matchLabels:
-      app: capstone
+      app: fincapstone
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -19,10 +19,10 @@ spec:
   template:
     metadata:
       labels:
-        app: capstone
+        app: fincapstone
     spec:
       containers:
-        - image: jankes11/capstone:final
+        - image: jankes11/fincapstone:final
           imagePullPolicy: Always
           name: newimage
           ports:
@@ -33,13 +33,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: capstone
+  name: fincapstone
   labels:
-    app: capstone
+    app: fincapstone
 spec:
   type: LoadBalancer
   selector:
-    app: capstone
+    app: fincapstone
   ports:
     - port: 80
       targetPort: 80
