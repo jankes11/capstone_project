@@ -97,14 +97,14 @@ jobs:
           name: build docker image
           command: |
             docker logout
-            docker build -t capstonefinal2 .
-            docker tag capstonefinal2 jankes11/capstonefinal2:final
+            docker build -t capstone .
+            docker tag capstone jankes11/capstone:latest
             docker image ls
       - run:
           name: push to dockerhub
           command: |
             docker login -u "$DOCKER_USR" -p "$DOCKER_PSWRD" docker.io
-            docker push jankes11/capstonefinal2
+            docker push jankes11/capstone:latest
 #
   create-eks-cluster:
     docker:
@@ -121,9 +121,9 @@ jobs:
       - run:
           name: Create AWS EKS cluster
           command: |
-            eksctl create cluster --name capstonefinal2 --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
-            eksctl utils describe-stacks --region us-east-1 --cluster=capstonefinal2
-            eksctl get cluster --name=capstonefinal2 --region=us-east-1
+            eksctl create cluster --name capstone --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
+            eksctl utils describe-stacks --region us-east-1 --cluster=capstone
+            eksctl get cluster --name=capstone --region=us-east-1
 
   test-cluster:
     docker:
@@ -148,7 +148,7 @@ jobs:
     parameters:
       cluster-name:
         description: |
-          capstonefinal2
+          capstone
         type: string
     steps:
       - checkout
@@ -160,7 +160,7 @@ jobs:
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: deployment.yml
-          resource-name: deployment/capstonefinal2
+          resource-name: deployment/capstone
 
 
   verify-cluster:
@@ -168,7 +168,7 @@ jobs:
     parameters: 
       cluster-name:
         description: |
-          capstonefinal2
+          capstone
         type: string
     steps:
       - kubernetes/install
@@ -195,23 +195,23 @@ orbs:
 workflows:
   deployment:
     jobs:
-#      - build
-#      - build_pushImage:
-#          requires:
-#            - build
-#      - create-eks-cluster:
-#          requires:
-#            - build_pushImage
-#      - test-cluster:
-#          cluster-name: capstonefinal2
-#          requires:
-#            - create-eks-cluster
+      - build
+      - build_pushImage:
+          requires:
+            - build
+      - create-eks-cluster:
+          requires:
+            - build_pushImage
+      - test-cluster:
+          cluster-name: capstone
+          requires:
+            - create-eks-cluster
       - deploy-cluster:
-          cluster-name: capstonefinal2
- #         requires:
- #           - test-cluster
+          cluster-name: capstone
+          requires:
+            - test-cluster
       - verify-cluster:
-          cluster-name: capstonefinal2
+          cluster-name: capstone
           requires:
             - deploy-cluster
 
