@@ -22,7 +22,7 @@ spec:
         app: capstone
     spec:
       containers:
-        - image: jankes11/capstonefinal2
+        - image: jankes11/capstone:final
           imagePullPolicy: Always
           name: newimage
           ports:
