@@ -1,6 +1,12 @@
 version: 2.1
-#
+
+orbs:
+  aws-eks: circleci/aws-eks@1.0.3
+  kubernetes: circleci/kubernetes@0.11.2
+
+
 commands:
+
   install_awscli:
     description: Install AWS CLI
     steps:
@@ -9,7 +15,8 @@ commands:
           command: |
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
-            ./aws/install 
+            ./aws/install
+
   install_nodejs:
     description: Install Node.js 13
     steps:
@@ -18,6 +25,7 @@ commands:
           command: |
             curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
             apt install -y nodejs
+
   install_aws_eks:
     description: Install eksctl 
     steps:
@@ -33,6 +41,7 @@ commands:
             fi
                 $SUDO mv src/eksctl /usr/local/bin/
                 rmdir src
+
   install_kubectl:
     description: Install kubectl
     steps:
@@ -46,21 +55,14 @@ commands:
 jobs:
   build:
     docker:
-      # Use the same Docker base as the project
       - image: python:3.7.3-stretch
-
     working_directory: ~/repo
-
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "requirements.txt" }}
-            # fallback to using the latest cache if no exact match is found here
             - v1-dependencies-
-
       - run:
           name: install dependencies
           command: |
@@ -74,8 +76,6 @@ jobs:
           paths:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
-
-      # run lint!
       - run:
           name: run lint
           command: |
@@ -91,21 +91,20 @@ jobs:
           name: install curl
           command: |
             apk add --update curl
-            
       - setup_remote_docker
       - run:
           name: build docker image
           command: |
             docker logout
-            docker build -t capstone .
-            docker tag capstone jankes11/capstone:latest
+            docker build -t capstonefin .
+            docker tag capstonefin jankes11/capstonefin:latest
             docker image ls
       - run:
           name: push to dockerhub
           command: |
             docker login -u "$DOCKER_USR" -p "$DOCKER_PSWRD" docker.io
-            docker push jankes11/capstone:latest
-#
+            docker push jankes11/capstonefin:latest
+
   create-eks-cluster:
     docker:
       - image: python:3.7-alpine3.11
@@ -121,9 +120,9 @@ jobs:
       - run:
           name: Create AWS EKS cluster
           command: |
-            eksctl create cluster --name capstone --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
-            eksctl utils describe-stacks --region us-east-1 --cluster=capstone
-            eksctl get cluster --name=capstone --region=us-east-1
+            eksctl create cluster --name capstonefin --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c,us-east-1d
+            eksctl utils describe-stacks --region us-east-1 --cluster=capstonefin
+            eksctl get cluster --name=capstonefin --region=us-east-1
 
   test-cluster:
     docker:
@@ -148,7 +147,7 @@ jobs:
     parameters:
       cluster-name:
         description: |
-          capstone
+          capstonefin
         type: string
     steps:
       - checkout
@@ -160,15 +159,14 @@ jobs:
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: deployment.yml
-          resource-name: deployment/capstone
-
+          resource-name: deployment/capstonefin
 
   verify-cluster:
     executor: aws-eks/python3
     parameters: 
       cluster-name:
         description: |
-          capstone
+          capstonefin
         type: string
     steps:
       - kubernetes/install
@@ -183,35 +181,26 @@ jobs:
             kubectl get services
             kubectl get deployments
 
-
-
-
-orbs:
-  aws-eks: circleci/aws-eks@1.0.3
-  kubernetes: circleci/kubernetes@0.11.2
- 
-
-
 workflows:
   deployment:
     jobs:
-#      - build
-#      - build_pushImage:
-#          requires:
-#            - build
-#      - create-eks-cluster:
-#          requires:
-#            - build_pushImage
-#      - test-cluster:
-#          cluster-name: capstone
-#          requires:
-#            - create-eks-cluster
+      - build
+      - build_pushImage:
+          requires:
+            - build
+      - create-eks-cluster:
+          requires:
+            - build_pushImage
+      - test-cluster:
+          cluster-name: capstonefin
+          requires:
+            - create-eks-cluster
       - deploy-cluster:
-          cluster-name: capstone
-#          requires:
-#            - test-cluster
+          cluster-name: capstonefin
+          requires:
+            - test-cluster
       - verify-cluster:
-          cluster-name: capstone
+          cluster-name: capstonefin
           requires:
             - deploy-cluster
 
