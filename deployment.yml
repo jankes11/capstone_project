@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capstonefinal
+  name: capstonefinal1
 spec:
   replicas: 2
   progressDeadlineSeconds: 3600
   selector:
     matchLabels:
-      app: capstonefinal
+      app: capstonefinal1
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,23 +15,23 @@ spec:
   template:
     metadata:
       labels:
-        app: capstonefinal
+        app: capstonefinal1
     spec:
       containers:
-        - image: jankes11/capstonefinal
+        - image: jankes11/capstonefinal1
           imagePullPolicy: Always
-          name: capstonefinal
+          name: capstonefinal1
           ports:
             - containerPort: 80
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: capstonefinal
+  name: capstonefinal1
 spec:
   type: LoadBalancer
   selector:
-    app: capstonefinal
+    app: capstonefinal1
   ports:
     - port: 80
       targetPort: 80
